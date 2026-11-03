@@ -149,7 +149,7 @@ svg text{fill:var(--muted);font-family:var(--f-data);font-size:11px}
 .stats3 em.sig{background:var(--long-soft);color:var(--long)}
 .note p{margin:0}
 .sh{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
-.qa{font-size:12.5px;color:var(--muted);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:2px 10px;white-space:nowrap}
+.qa{font:inherit;font-size:12.5px;background:none;cursor:pointer;color:var(--muted);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:2px 10px;white-space:nowrap}
 .qa:hover{color:var(--ink);border-color:var(--ink)}
 .qa:focus-visible{outline:2px solid var(--short);outline-offset:2px}
 .foot{display:flex;flex-wrap:wrap;gap:4px 16px;justify-content:space-between;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
@@ -161,7 +161,19 @@ svg text{fill:var(--muted);font-family:var(--f-data);font-size:11px}
 .verdict{background:var(--chip);border-radius:8px;padding:14px 16px;display:grid;gap:6px}
 .verdict b{font-size:13px}
 .verdict p{color:var(--ink);font-size:13.5px}
-.hcard:target{border-color:var(--ink)}
+#hdlg{border:1px solid var(--line);border-radius:12px;padding:0;background:var(--panel);color:var(--ink);width:min(640px,calc(100vw - 32px));max-height:min(80vh,720px);overflow:hidden;display:none}
+#hdlg[open]{display:grid;grid-template-rows:auto 1fr}
+#hdlg::backdrop{background:rgba(10,12,16,.45)}
+#hdlg .dh{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px 10px 20px;border-bottom:1px solid var(--line)}
+#hdlg .dx{font:inherit;font-size:16px;line-height:1;width:34px;height:34px;border-radius:999px;border:1px solid var(--line);background:none;color:var(--muted);cursor:pointer}
+#hdlg .dx:hover{color:var(--ink);border-color:var(--ink)}
+#hdlg .dx:focus-visible{outline:2px solid var(--short);outline-offset:2px}
+#hdlg .db{overflow-y:auto;padding:16px 20px 20px;display:grid;gap:12px;overscroll-behavior:contain}
+#hdlg .db p{margin:0;line-height:1.7}
+#hdlg .db dl{margin:0;display:grid;grid-template-columns:110px 1fr;gap:10px 16px}
+#hdlg .db dt{font-weight:700;font-size:13.5px}
+#hdlg .db dd{margin:0;color:var(--muted);line-height:1.65;font-size:13.5px}
+@media (max-width:560px){#hdlg .db dl{grid-template-columns:1fr;gap:2px}#hdlg .db dd{margin-bottom:10px}#hdlg{max-height:85vh}}
 @media (max-width:560px){.hcard{padding:16px}.hcard dl{grid-template-columns:1fr;gap:2px}.hcard dd{margin-bottom:10px}}
 @media (prefers-reduced-motion:no-preference){.bar i{transition:width .5s ease}}
 </style>
@@ -199,7 +211,7 @@ svg text{fill:var(--muted);font-family:var(--f-data);font-size:11px}
 </section>
 
 <section>
-  <div class="sh"><h2>일별 추이와 지수 비교</h2><a class="qa" href="#help-daily" data-help="help-daily">읽는 법</a></div>
+  <div class="sh"><h2>일별 추이와 지수 비교</h2><button type="button" class="qa" data-help="help-daily" aria-haspopup="dialog">읽는 법</button></div>
   <div class="ctrl">
     <div class="filters" id="idxSel" role="group" aria-label="비교할 지수"></div>
     <div class="filters" id="smSel" role="group" aria-label="평균 방식"></div>
@@ -213,12 +225,12 @@ svg text{fill:var(--muted);font-family:var(--f-data);font-size:11px}
 </section>
 
 <section>
-  <div class="sh"><h2>주간 합계</h2><a class="qa" href="#help-weekly" data-help="help-weekly">읽는 법</a></div>
+  <div class="sh"><h2>주간 합계</h2><button type="button" class="qa" data-help="help-weekly" aria-haspopup="dialog">읽는 법</button></div>
   <div class="panel scroll"><table id="histT"><thead><tr><th>주간</th><th class="n">글</th><th class="n">롱</th><th class="n">숏</th><th class="n">하소연</th><th class="n">롱 비중</th><th class="n">가중</th><th class="n">삭제</th></tr></thead><tbody></tbody></table></div>
 </section>
 
 <section>
-  <div class="sh"><h2>많이 언급된 종목</h2><a class="qa" href="#help-assets" data-help="help-assets">읽는 법</a></div>
+  <div class="sh"><h2>많이 언급된 종목</h2><button type="button" class="qa" data-help="help-assets" aria-haspopup="dialog">읽는 법</button></div>
   <div class="panel scroll"><table id="assetT"><thead><tr><th>대상</th><th class="n">언급</th><th class="n">롱</th><th class="n">숏</th><th>롱·숏</th><th>분위기</th></tr></thead><tbody></tbody></table></div>
 </section>
 
@@ -282,6 +294,7 @@ svg text{fill:var(--muted);font-family:var(--f-data);font-size:11px}
 </section>
 </main>
 </div>
+<dialog id="hdlg" aria-labelledby="hdlgT"><div class="dh"><h2 id="hdlgT"></h2><button type="button" class="dx" aria-label="닫기">✕</button></div><div class="db"></div></dialog>
 
 <script>
 const HISTORY=/*HISTORY_START*/[{"week": "10/19~10/25", "start": "2026-10-19", "end": "2026-10-25", "n": 31, "L": 7, "S": 3, "N": 10, "P": 5, "I": 6, "long": 0.7, "wlong": 0.504}, {"week": "10/26~11/01", "start": "2026-10-26", "end": "2026-11-01", "n": 58, "L": 14, "S": 14, "N": 3, "P": 9, "I": 18, "long": 0.5, "wlong": 0.646}]/*HISTORY_END*/;
@@ -399,10 +412,22 @@ const DIRS={L:"롱",S:"숏",N:"관망",P:"하소연",I:"정보"};
     if(id==='dashboard')dispatchEvent(new Event('resize'));
     if(scrollTo){const el=document.getElementById(scrollTo);if(el)el.scrollIntoView({block:'start'})}else scrollTo===undefined||window.scrollTo(0,0);
   }
-  function fromHash(){const h=location.hash.slice(1);if(h==='help')show('help',false,null);else if(h.startsWith('help-'))show('help',false,h);else show('dashboard',false,undefined)}
-  tabs.forEach((b,i)=>{b.addEventListener('click',()=>{const id=b.getAttribute('aria-controls');history.replaceState(null,'','#'+id);show(id,false,null)});
+  function fromHash(){const h=location.hash.slice(1);if(h==='help')show('help',false,null);else if(h.startsWith('help-'))show('help',false,h);else if(h===''||h==='dashboard')show('dashboard',false,undefined)}
+  tabs.forEach((b,i)=>{b.addEventListener('click',()=>{const id=b.getAttribute('aria-controls');if(location.hash.slice(1)!==id){history.pushState(null,'','#'+id)}show(id,false,null)});
     b.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){const n=tabs[(i+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length];n.click();n.focus();e.preventDefault()}})});
-  document.querySelectorAll('[data-help]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const h=a.dataset.help;history.replaceState(null,'','#'+h);show('help',false,h)}));
+  // help popup: shows that help section in a dialog; Back button / Esc / backdrop / ✕ close it
+  const dlg=document.getElementById('hdlg'),dT=dlg.querySelector('h2'),dB=dlg.querySelector('.db');let opener=null,pushed=false,sy=0;try{history.scrollRestoration='manual'}catch(e){}
+  function openHelp(id,btn){const src=document.getElementById(id);if(!src)return;opener=btn;
+    dT.textContent=src.querySelector('h2').textContent;dB.innerHTML='';
+    [...src.children].filter(c=>c.tagName!=='H2').forEach(c=>{const n=c.cloneNode(true);n.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));dB.appendChild(n)});
+    try{history.pushState({hdlg:1},'');pushed=true}catch(e){pushed=false}
+    sy=scrollY;dlg.showModal();dB.scrollTop=0;dlg.querySelector('.dx').focus()}
+  function closeHelp(fromPop){if(!dlg.open)return;dlg.close()}
+  dlg.addEventListener('close',()=>{if(pushed){pushed=false;if(history.state&&history.state.hdlg)history.back()}if(opener)opener.focus({preventScroll:true});scrollTo(0,sy);requestAnimationFrame(()=>scrollTo(0,sy))});
+  dlg.querySelector('.dx').addEventListener('click',()=>closeHelp());
+  dlg.addEventListener('click',e=>{if(e.target===dlg)closeHelp()});
+  addEventListener('popstate',()=>{if(dlg.open){pushed=false;dlg.close()}else if(sy){const y=sy;requestAnimationFrame(()=>scrollTo(0,y))}});
+  document.querySelectorAll('[data-help]').forEach(b=>b.addEventListener('click',()=>openHelp(b.dataset.help,b)));
   addEventListener('hashchange',fromHash);fromHash();
 })();
 </script>
