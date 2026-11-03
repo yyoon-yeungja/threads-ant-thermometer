@@ -66,7 +66,7 @@ table{font-size:12.5px}th,td{padding:8px 5px}
 .ls{width:64px}
 #histT th:nth-child(5),#histT td:nth-child(5),#histT th:nth-child(8),#histT td:nth-child(8){display:none}
 #histT td:first-child{white-space:nowrap}
-.panel{padding:12px}
+.wrap .panel{padding:12px}
 .legend{gap:6px 12px}
 }
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0}
@@ -148,6 +148,21 @@ svg text{fill:var(--muted);font-family:var(--f-data);font-size:11px}
 .stats3 em{font-style:normal;font-size:12px;font-weight:700;padding:1px 7px;border-radius:999px;justify-self:start;background:var(--chip);color:var(--muted)}
 .stats3 em.sig{background:var(--long-soft);color:var(--long)}
 .note p{margin:0}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.qa{font-size:12.5px;color:var(--muted);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:2px 10px;white-space:nowrap}
+.qa:hover{color:var(--ink);border-color:var(--ink)}
+.qa:focus-visible{outline:2px solid var(--short);outline-offset:2px}
+.foot{display:flex;flex-wrap:wrap;gap:4px 16px;justify-content:space-between;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+.hcard{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px;display:grid;gap:12px;scroll-margin-top:16px}
+.hcard p{margin:0;line-height:1.7;max-width:72ch}
+.hcard dl{margin:0;display:grid;grid-template-columns:132px 1fr;gap:10px 18px}
+.hcard dt{font-weight:700;font-size:13.5px}
+.hcard dd{margin:0;color:var(--muted);line-height:1.65;font-size:13.5px;max-width:72ch}
+.verdict{background:var(--chip);border-radius:8px;padding:14px 16px;display:grid;gap:6px}
+.verdict b{font-size:13px}
+.verdict p{color:var(--ink);font-size:13.5px}
+.hcard:target{border-color:var(--ink)}
+@media (max-width:560px){.hcard{padding:16px}.hcard dl{grid-template-columns:1fr;gap:2px}.hcard dd{margin-bottom:10px}}
 @media (prefers-reduced-motion:no-preference){.bar i{transition:width .5s ease}}
 </style>
 </head>
@@ -156,20 +171,24 @@ svg text{fill:var(--muted);font-family:var(--f-data);font-size:11px}
 <header>
   <div class="eyebrow">THREADS 국내 투자 심리 · <span id="period"></span></div>
   <h1>스레드 개미 온도계</h1>
-  <p class="lede">Threads에서 주식·코인 키워드 14개로 올라온 글을 하루 세 번 모아 직접 읽고 롱(상승 기대)·숏(하락 경고)으로 나눕니다. 그날그날의 롱 비중을 실제 지수와 나란히 놓아, 개미 심리가 시장을 앞서는지 따라가는지 봅니다.</p>
+  <nav class="tabs" role="tablist" aria-label="페이지">
+    <button role="tab" id="t-dashboard" aria-controls="dashboard" aria-selected="true">대시보드</button>
+    <button role="tab" id="t-help" aria-controls="help" aria-selected="false" tabindex="-1">도움말</button>
+  </nav>
 </header>
 
+<main id="dashboard" class="tabpanel" role="tabpanel" aria-labelledby="t-dashboard">
 <section>
   <div class="gauge">
     <div class="gtop">
       <div>
-        <div class="eyebrow">최근 7일 롱 비중 (롱 ÷ 롱+숏)</div>
+        <div class="eyebrow">최근 7일 롱 비중</div>
         <div class="big" id="bigLong"></div>
       </div>
       <div class="kpis">
-        <div class="kpi"><b class="num" id="kWeighted"></b><span>좋아요 가중 롱 비중</span></div>
+        <div class="kpi"><b class="num" id="kWeighted"></b><span>좋아요 가중</span></div>
         <div class="kpi"><b class="num" id="kShift"></b><span>그 전 7일 대비</span></div>
-        <div class="kpi"><b class="num" id="kPain"></b><span>손실 하소연 글</span></div>
+        <div class="kpi"><b class="num" id="kPain"></b><span>손실 하소연</span></div>
       </div>
     </div>
     <div class="weeks" id="weeks"></div>
@@ -180,8 +199,7 @@ svg text{fill:var(--muted);font-family:var(--f-data);font-size:11px}
 </section>
 
 <section>
-  <h2>일별 추이와 지수 비교</h2>
-  <p class="sub">하루(한국 시간) 단위 롱 비중을 실제 지수와 나란히 놓았습니다. "선행"은 오늘 심리가 다음 장 수익률과 같은 방향으로 움직였는지, "후행"은 직전 장 결과가 오늘 심리를 끌고 갔는지입니다. 하루 글 수가 적은 날이 있어서 3일 평균으로 보는 쪽이 덜 흔들립니다.</p>
+  <div class="sh"><h2>일별 추이와 지수 비교</h2><a class="qa" href="#help-daily" data-help="help-daily">읽는 법</a></div>
   <div class="ctrl">
     <div class="filters" id="idxSel" role="group" aria-label="비교할 지수"></div>
     <div class="filters" id="smSel" role="group" aria-label="평균 방식"></div>
@@ -192,26 +210,77 @@ svg text{fill:var(--muted);font-family:var(--f-data);font-size:11px}
     <div class="panel"><div class="eyebrow" style="margin-bottom:6px">선행: 오늘 롱 비중 → 다음 장 수익률</div><div id="scF"></div></div>
     <div class="panel"><div class="eyebrow" style="margin-bottom:6px">후행: 직전 장 수익률 → 오늘 롱 비중</div><div id="scR"></div></div>
   </div>
-  <p class="sub" id="dverdict"></p>
 </section>
 
 <section>
-  <h2>주간 합계</h2>
+  <div class="sh"><h2>주간 합계</h2><a class="qa" href="#help-weekly" data-help="help-weekly">읽는 법</a></div>
   <div class="panel scroll"><table id="histT"><thead><tr><th>주간</th><th class="n">글</th><th class="n">롱</th><th class="n">숏</th><th class="n">하소연</th><th class="n">롱 비중</th><th class="n">가중</th><th class="n">삭제</th></tr></thead><tbody></tbody></table></div>
 </section>
 
 <section>
-  <h2>많이 언급된 종목</h2>
-  <p class="sub">최근 주간 표본에서 한 글에 여러 종목이 나오면 각각 셉니다. 막대는 그 종목을 언급한 글 중 롱·숏의 비율입니다.</p>
+  <div class="sh"><h2>많이 언급된 종목</h2><a class="qa" href="#help-assets" data-help="help-assets">읽는 법</a></div>
   <div class="panel scroll"><table id="assetT"><thead><tr><th>대상</th><th class="n">언급</th><th class="n">롱</th><th class="n">숏</th><th>롱·숏</th><th>분위기</th></tr></thead><tbody></tbody></table></div>
 </section>
 
-<div class="note">
-  <p><b>수집 방법.</b> Threads에서 주식, 코스피, 삼성전자, 하이닉스, 비트코인, 코인, 미국주식, 나스닥, 매수, 손절, 반등, 폭락, 엔비디아, 국장을 하루 세 번(9시 41분, 15시 41분, 2시 41분) 검색해 모읍니다. 11월 3일까지는 인기 게시물만, 11월 4일부터는 최신 게시물까지 포함해 표본이 큽니다. 지워진 글도 처음 본 원문 기준으로 집계합니다.</p>
-  <p><b>분류 기준.</b> 롱은 상승·매수·버티기를 권하거나 기대하는 글, 숏은 하락·탈출·경고 글, 관망은 방향 없는 의견, 손실 하소연은 물림·손실을 털어놓는 글, 뉴스·정보는 사실 전달 글입니다. 투자와 무관한 글은 뺍니다. 사람이 읽고 판단한 것이라 애매한 글이 있습니다.</p>
-  <p><b>지수.</b> 나스닥 종합(^IXIC), S&amp;P500(^GSPC), 코스피(^KS11) 일별 종가(Yahoo Finance). 상관계수는 피어슨 r, p값은 t검정입니다. 표본이 쌓이기 전에는 방향만 참고하세요. 투자 권유가 아닙니다.</p>
-  <p id="updated"></p>
-</div>
+<footer class="foot"><span id="updated"></span><span>투자 권유가 아닙니다</span></footer>
+</main>
+
+<main id="help" class="tabpanel" role="tabpanel" aria-labelledby="t-help" hidden>
+<section class="hcard">
+  <h2>이 페이지는</h2>
+  <p>Threads에서 주식·코인 이야기를 하는 한국 개인 투자자(개미)의 분위기를 매일 재는 온도계입니다. 글을 직접 읽어 롱(상승 기대)과 숏(하락 경고)으로 나누고, 그날그날의 롱 비중을 실제 지수와 나란히 놓아 개미 심리가 시장을 앞서는지, 따라가는지 봅니다.</p>
+</section>
+
+<section class="hcard" id="help-gauge">
+  <h2>상단 게이지</h2>
+  <dl>
+    <dt>최근 7일 롱 비중</dt><dd>최근 7일 동안 롱 글 수 ÷ (롱 + 숏 글 수). 관망·하소연·뉴스 글은 넣지 않습니다. 50%보다 높으면 오른다는 쪽이 많다는 뜻입니다.</dd>
+    <dt>좋아요 가중</dt><dd>글 수 대신 좋아요 수로 센 롱 비중입니다. 많이 공감받은 글이 어느 쪽인지 보여 줍니다.</dd>
+    <dt>그 전 7일 대비</dt><dd>바로 앞 7일의 롱 비중 → 최근 7일 롱 비중.</dd>
+    <dt>손실 하소연</dt><dd>물렸다, 손실 봤다는 글 수(앞 7일 → 최근 7일). 늘어나면 시장에 지친 분위기로 봅니다.</dd>
+    <dt>막대</dt><dd>그 기간 모든 투자 글을 롱·숏·관망·손실 하소연·뉴스·정보로 나눈 비율입니다.</dd>
+  </dl>
+</section>
+
+<section class="hcard" id="help-daily">
+  <h2>일별 추이와 지수 비교</h2>
+  <dl>
+    <dt>차트</dt><dd>위는 고른 지수의 종가(빨강 = 전날보다 오른 날, 파랑 = 내린 날), 아래는 하루(한국 시간) 롱 비중입니다. 하루 글 수가 적은 날이 있어 3일 평균 선으로 보면 덜 흔들립니다. 점 크기는 그날 롱·숏 글 수입니다. 회색 띠는 주말입니다.</dd>
+    <dt>선행 상관</dt><dd>오늘 롱 비중과 다음 장 수익률의 상관계수(r)입니다. 플러스로 크면 개미가 낙관한 다음 날 시장이 올랐다는 뜻입니다. 나스닥·S&amp;P500은 같은 날짜 밤에 열리는 미국 장, 코스피는 다음 거래일과 짝을 짓습니다.</dd>
+    <dt>후행 상관</dt><dd>직전 장 수익률과 오늘 롱 비중의 상관계수입니다. 크면 시장이 오른 뒤에야 롱 글이 늘어난다, 즉 심리가 시장을 따라간다는 뜻입니다.</dd>
+    <dt>p값</dt><dd>그 정도 상관이 우연으로 나올 확률입니다. 0.05보다 작으면 "통계적으로 유의"로 표시합니다. 3일 평균은 이웃한 날이 겹쳐 계산되므로 p값이 실제보다 작게 나올 수 있습니다. 하루 값으로도 확인해 보세요.</dd>
+    <dt>방향 일치</dt><dd>롱 비중이 50%보다 높은 날 다음 장이 올랐는지(낮은 날은 내렸는지) 맞힌 비율입니다. 동전 던지기 기준은 50%입니다.</dd>
+    <dt>산점도</dt><dd>점 하나가 하루입니다. 점선은 추세선이고, 빨강은 그 장이 오른 날, 파랑은 내린 날입니다.</dd>
+  </dl>
+  <div class="verdict"><b>지금 데이터로 본 해석</b><p id="dverdict"></p></div>
+</section>
+
+<section class="hcard" id="help-weekly">
+  <h2>주간 합계</h2>
+  <dl>
+    <dt>글</dt><dd>그 주(월~일)에 모아 분류한 투자 관련 글 수입니다. 투자와 무관한 글은 뺍니다.</dd>
+    <dt>롱 · 숏 · 하소연</dt><dd>분류별 글 수입니다.</dd>
+    <dt>롱 비중 · 가중</dt><dd>롱 ÷ (롱 + 숏), 그리고 같은 계산을 좋아요 수로 한 값입니다.</dd>
+    <dt>삭제</dt><dd>주간 정리 때 다시 열어 봤더니 지워져 있던 롱·숏 글 수입니다. 예측이 빗나간 뒤 글을 지우는 경우가 많아, 지워진 글도 처음 본 원문 기준으로 집계에 넣습니다.</dd>
+  </dl>
+</section>
+
+<section class="hcard" id="help-assets">
+  <h2>많이 언급된 종목</h2>
+  <p>최근 주간 표본에서 종목·시장이 언급된 횟수입니다. 한 글에 여러 종목이 나오면 각각 셉니다. 나스닥·미장, 코스피·국장, 비트코인·코인처럼 같은 대상을 부르는 말은 하나로 묶습니다. 막대는 그 종목을 언급한 롱·숏 글의 비율이고, 분위기는 롱 비중이 70% 이상이면 "롱 우세", 35% 이하면 "숏 우세", 롱·숏 글이 2개 미만이면 "뉴스 위주"로 표시합니다.</p>
+</section>
+
+<section class="hcard" id="help-method">
+  <h2>수집과 분류 방법</h2>
+  <dl>
+    <dt>수집</dt><dd>Threads에서 주식, 코스피, 삼성전자, 하이닉스, 비트코인, 코인, 미국주식, 나스닥, 매수, 손절, 반등, 폭락, 엔비디아, 국장 14개 키워드를 하루 세 번(한국 시간 9:41, 15:41, 2:41) 검색합니다. 글이 몰리는 시간 직후에 모아 지워지기 전 원문을 남깁니다. 11월 3일까지는 인기 게시물만, 11월 4일부터는 최신 게시물까지 포함해 표본이 큽니다.</dd>
+    <dt>분류</dt><dd>롱 = 상승·매수·버티기를 권하거나 기대하는 글. 숏 = 하락·탈출·경고 글. 관망 = 방향 없는 의견·질문. 손실 하소연 = 물림·손실을 털어놓는 글. 뉴스·정보 = 사실 전달 글. 정치·광고 등 무관한 글은 뺍니다. 사람이 읽고 판단한 것이라 애매한 글이 있을 수 있습니다.</dd>
+    <dt>지수</dt><dd>나스닥 종합(^IXIC), S&amp;P500(^GSPC), 코스피(^KS11) 일별 종가(Yahoo Finance). 상관계수는 피어슨 r, p값은 t검정입니다.</dd>
+    <dt>갱신</dt><dd>일별 점과 지수는 매일 오후, 주간 합계와 종목 표는 매주 월요일 아침에 갱신됩니다.</dd>
+    <dt>한계</dt><dd>아직 표본이 짧아 상관이 우연인지 가리기 어렵습니다. 의미 있게 보려면 최소 두세 달치가 필요합니다. 지난 글을 거슬러 모으면 틀린 예측이 이미 지워져 낙관 쪽으로 치우치므로, 수집을 시작한 뒤의 글만 씁니다. 특정 계정이나 글은 공개하지 않습니다. 투자 권유가 아닙니다.</dd>
+  </dl>
+</section>
+</main>
 </div>
 
 <script>
@@ -321,6 +390,21 @@ const DIRS={L:"롱",S:"숏",N:"관망",P:"하소연",I:"정보"};
 })();
 
 
+
+// tabs
+(function(){
+  const tabs=[...document.querySelectorAll('[role=tab]')];
+  function show(id,focus,scrollTo){
+    tabs.forEach(b=>{const on=b.getAttribute('aria-controls')===id;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;document.getElementById(b.getAttribute('aria-controls')).hidden=!on;if(on&&focus)b.focus()});
+    if(id==='dashboard')dispatchEvent(new Event('resize'));
+    if(scrollTo){const el=document.getElementById(scrollTo);if(el)el.scrollIntoView({block:'start'})}else scrollTo===undefined||window.scrollTo(0,0);
+  }
+  function fromHash(){const h=location.hash.slice(1);if(h==='help')show('help',false,null);else if(h.startsWith('help-'))show('help',false,h);else show('dashboard',false,undefined)}
+  tabs.forEach((b,i)=>{b.addEventListener('click',()=>{const id=b.getAttribute('aria-controls');history.replaceState(null,'','#'+id);show(id,false,null)});
+    b.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){const n=tabs[(i+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length];n.click();n.focus();e.preventDefault()}})});
+  document.querySelectorAll('[data-help]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const h=a.dataset.help;history.replaceState(null,'','#'+h);show('help',false,h)}));
+  addEventListener('hashchange',fromHash);fromHash();
+})();
 </script>
 </body>
 </html>
