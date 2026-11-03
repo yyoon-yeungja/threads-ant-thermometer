@@ -6,34 +6,26 @@
 <title>스레드 개미 온도계</title>
 <meta name="description" content="Threads 한국 투자 게시물의 롱·숏 비중을 매일 집계해 나스닥·S&amp;P500·코스피와 비교합니다.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
 <style>
 html{-webkit-text-size-adjust:100%}*,*::before,*::after{box-sizing:border-box}body{margin:0;font-size:14px}[hidden]{display:none!important}img{max-width:100%}
 
-/* Layout: 증권 앱 시세판 같은 한 열 리포트. 요약 → 롱숏 흐름 → 종목 → 계정 → 원문. 한국식 색: 롱=빨강, 숏=파랑 */
-:root{
-  --bg:#f5f6f8; --panel:#ffffff; --ink:#151a24; --muted:#5d6577; --line:#e1e4ea;
-  --long:#d6342c; --short:#2463d9; --neutral:#9aa1ae; --pain:#b5761b; --info:#6f6ad0;
-  --long-soft:#fbe5e3; --short-soft:#e2ebfb; --chip:#eef0f4;
-  --f-display:"Noto Serif KR","Apple SD Gothic Neo",serif;
+/* 어두운 관리자 대시보드 톤: 검정 바탕 + 짙은 회색 패널, 파랑·청록·주황 포인트. 롱=주황(상승), 숏=파랑(하락) */
+:root,:root[data-theme="light"],:root[data-theme="dark"]{
+  --bg:#121214; --panel:#1c1c1f; --panel2:#232327; --ink:#e8e9ec; --muted:#8b8f99; --line:#2c2d33;
+  --long:#ff7a3c; --short:#2f8fff; --teal:#1fc2a7; --neutral:#5d616c; --pain:#f0be4a; --info:#1fc2a7;
+  --long-soft:rgba(255,122,60,.16); --short-soft:rgba(47,143,255,.16); --chip:#2a2b30;
+  --f-display:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
   --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-  --f-data:"IBM Plex Mono",ui-monospace,Menlo,monospace;
-  color-scheme:light;
+  --f-data:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color-scheme:dark;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0f131b; --panel:#171c27; --ink:#e8ebf1; --muted:#9aa2b3; --line:#283041;
-  --long:#ff6a5f; --short:#5f95ff; --neutral:#6d7586; --pain:#e0a24a; --info:#9b96f0;
-  --long-soft:#3a1d1d; --short-soft:#1b2944; --chip:#222a38; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#0f131b; --panel:#171c27; --ink:#e8ebf1; --muted:#9aa2b3; --line:#283041;
-  --long:#ff6a5f; --short:#5f95ff; --neutral:#6d7586; --pain:#e0a24a; --info:#9b96f0;
-  --long-soft:#3a1d1d; --short-soft:#1b2944; --chip:#222a38; color-scheme:dark}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);line-height:1.55}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);line-height:1.55;font-variant-numeric:tabular-nums}
 .wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 56px;display:grid;gap:28px}
 header{display:grid;gap:6px}
 .eyebrow{font-size:12px;letter-spacing:.08em;color:var(--muted);font-weight:600}
-h1{font-family:var(--f-display);font-weight:900;font-size:clamp(28px,5vw,42px);line-height:1.15;margin:0;text-wrap:balance}
-h2{font-family:var(--f-display);font-size:21px;margin:0;text-wrap:balance}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(24px,4vw,32px);letter-spacing:-.01em;line-height:1.15;margin:0;text-wrap:balance}
+h2{font-family:var(--f-display);font-weight:600;font-size:17px;margin:0;text-wrap:balance}
 .lede{color:var(--muted);max-width:66ch;margin:0}
 section{display:grid;gap:14px}
 .sub{color:var(--muted);font-size:13.5px;margin:0;max-width:70ch}
@@ -41,11 +33,11 @@ section{display:grid;gap:14px}
 /* gauge */
 .gauge{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px;display:grid;gap:16px}
 .gtop{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;justify-content:space-between}
-.big{font-family:var(--f-data);font-weight:600;font-size:clamp(44px,9vw,64px);line-height:1;color:var(--long)}
+.big{font-family:var(--f-data);font-weight:300;letter-spacing:-.02em;font-size:clamp(52px,10vw,72px);line-height:1;color:var(--long)}
 .big small{font-size:.38em;color:var(--muted);font-weight:400;margin-left:6px}
 .kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;flex:1;min-width:0;max-width:560px}
 .kpi{display:grid;gap:2px;border-left:2px solid var(--line);padding-left:12px}
-.kpi b{font-family:var(--f-data);font-size:22px;font-weight:600}
+.kpi b{font-family:var(--f-data);font-size:24px;font-weight:300}
 .kpi span{font-size:12.5px;color:var(--muted)}
 .bar{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--chip)}
 .bar i{display:block;height:100%}
@@ -103,7 +95,7 @@ svg text{fill:var(--muted);font-family:var(--f-data);font-size:11px}
 .post .meta{color:var(--muted);font-size:12px}
 .filters{display:flex;flex-wrap:wrap;gap:6px}
 .filters button{font:inherit;font-size:12.5px;border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:999px;padding:4px 11px;cursor:pointer}
-.filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.filters button[aria-pressed="true"]{background:var(--short);color:#fff;border-color:var(--short)}
 .filters button:focus-visible{outline:2px solid var(--short);outline-offset:2px}
 .note{font-size:12.5px;color:var(--muted);display:grid;gap:4px;max-width:75ch}
 .rx{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
@@ -123,7 +115,7 @@ svg text{fill:var(--muted);font-family:var(--f-data);font-size:11px}
 .rt{display:inline-block;font-size:11.5px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--ink)}
 .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto}
 .tabs button{font:inherit;font-weight:600;font-size:14.5px;background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);padding:10px 14px;cursor:pointer;white-space:nowrap;margin-bottom:-1px}
-.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--long)}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--short)}
 .tabs button:hover{color:var(--ink)}
 .tabs button:focus-visible{outline:2px solid var(--short);outline-offset:-2px}
 .tabpanel{display:grid;gap:28px}
@@ -143,14 +135,16 @@ svg text{fill:var(--muted);font-family:var(--f-data);font-size:11px}
 .ctrl{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between}
 .stats3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
 .stats3 div{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:2px}
-.stats3 b{font-family:var(--f-data);font-size:24px;font-weight:600}
+.stats3 b{font-family:var(--f-data);font-size:32px;font-weight:300;letter-spacing:-.01em}
 .stats3 span{font-size:12.5px;color:var(--muted)}
 .stats3 em{font-style:normal;font-size:12px;font-weight:700;padding:1px 7px;border-radius:999px;justify-self:start;background:var(--chip);color:var(--muted)}
 .stats3 em.sig{background:var(--long-soft);color:var(--long)}
 .note p{margin:0}
-.sh{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
-.qa{font:inherit;font-size:12.5px;background:none;cursor:pointer;color:var(--muted);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:2px 10px;white-space:nowrap}
-.qa:hover{color:var(--ink);border-color:var(--ink)}
+@media (max-width:380px){h1 .en{display:none}}
+h1 .en{white-space:nowrap;font-size:13px;font-weight:400;color:var(--muted);letter-spacing:.06em;margin-left:6px;vertical-align:middle}
+.sh{display:flex;align-items:center;justify-content:flex-start;gap:8px}
+.qa{font:inherit;font-size:11px;font-weight:700;line-height:1;background:none;cursor:pointer;color:var(--muted);border:1.5px solid var(--muted);border-radius:50%;width:18px;height:18px;padding:0;display:inline-grid;place-items:center;flex:none;position:relative}.qa::after{content:"";position:absolute;inset:-12px}
+.qa:hover{color:var(--short);border-color:var(--short)}
 .qa:focus-visible{outline:2px solid var(--short);outline-offset:2px}
 .foot{display:flex;flex-wrap:wrap;gap:4px 16px;justify-content:space-between;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
 .hcard{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px;display:grid;gap:12px;scroll-margin-top:16px}
@@ -182,7 +176,7 @@ svg text{fill:var(--muted);font-family:var(--f-data);font-size:11px}
 <div class="wrap">
 <header>
   <div class="eyebrow">THREADS 국내 투자 심리 · <span id="period"></span></div>
-  <h1>스레드 개미 온도계</h1>
+  <h1>스레드 개미 온도계 <span class="en">ANT THERMOMETER</span></h1>
   <nav class="tabs" role="tablist" aria-label="페이지">
     <button role="tab" id="t-dashboard" aria-controls="dashboard" aria-selected="true">대시보드</button>
     <button role="tab" id="t-help" aria-controls="help" aria-selected="false" tabindex="-1">도움말</button>
@@ -211,7 +205,7 @@ svg text{fill:var(--muted);font-family:var(--f-data);font-size:11px}
 </section>
 
 <section>
-  <div class="sh"><h2>일별 추이와 지수 비교</h2><button type="button" class="qa" data-help="help-daily" aria-haspopup="dialog">읽는 법</button></div>
+  <div class="sh"><h2>일별 추이와 지수 비교</h2><button type="button" class="qa" data-help="help-daily" aria-haspopup="dialog" aria-label="읽는 법" title="읽는 법">?</button></div>
   <div class="ctrl">
     <div class="filters" id="idxSel" role="group" aria-label="비교할 지수"></div>
     <div class="filters" id="smSel" role="group" aria-label="평균 방식"></div>
@@ -225,12 +219,12 @@ svg text{fill:var(--muted);font-family:var(--f-data);font-size:11px}
 </section>
 
 <section>
-  <div class="sh"><h2>주간 합계</h2><button type="button" class="qa" data-help="help-weekly" aria-haspopup="dialog">읽는 법</button></div>
+  <div class="sh"><h2>주간 합계</h2><button type="button" class="qa" data-help="help-weekly" aria-haspopup="dialog" aria-label="읽는 법" title="읽는 법">?</button></div>
   <div class="panel scroll"><table id="histT"><thead><tr><th>주간</th><th class="n">글</th><th class="n">롱</th><th class="n">숏</th><th class="n">하소연</th><th class="n">롱 비중</th><th class="n">가중</th><th class="n">삭제</th></tr></thead><tbody></tbody></table></div>
 </section>
 
 <section>
-  <div class="sh"><h2>많이 언급된 종목</h2><button type="button" class="qa" data-help="help-assets" aria-haspopup="dialog">읽는 법</button></div>
+  <div class="sh"><h2>많이 언급된 종목</h2><button type="button" class="qa" data-help="help-assets" aria-haspopup="dialog" aria-label="읽는 법" title="읽는 법">?</button></div>
   <div class="panel scroll"><table id="assetT"><thead><tr><th>대상</th><th class="n">언급</th><th class="n">롱</th><th class="n">숏</th><th>롱·숏</th><th>분위기</th></tr></thead><tbody></tbody></table></div>
 </section>
 
@@ -257,12 +251,12 @@ svg text{fill:var(--muted);font-family:var(--f-data);font-size:11px}
 <section class="hcard" id="help-daily">
   <h2>일별 추이와 지수 비교</h2>
   <dl>
-    <dt>차트</dt><dd>위는 고른 지수의 종가(빨강 = 전날보다 오른 날, 파랑 = 내린 날), 아래는 하루(한국 시간) 롱 비중입니다. 하루 글 수가 적은 날이 있어 3일 평균 선으로 보면 덜 흔들립니다. 점 크기는 그날 롱·숏 글 수입니다. 회색 띠는 주말입니다.</dd>
+    <dt>차트</dt><dd>위(청록)는 고른 지수의 종가로, 점 색이 주황이면 전날보다 오른 날, 파랑이면 내린 날입니다. 아래(주황)는 하루(한국 시간) 롱 비중입니다. 하루 글 수가 적은 날이 있어 3일 평균 선으로 보면 덜 흔들립니다. 점 크기는 그날 롱·숏 글 수입니다. 회색 띠는 주말입니다.</dd>
     <dt>선행 상관</dt><dd>오늘 롱 비중과 다음 장 수익률의 상관계수(r)입니다. 플러스로 크면 개미가 낙관한 다음 날 시장이 올랐다는 뜻입니다. 나스닥·S&amp;P500은 같은 날짜 밤에 열리는 미국 장, 코스피는 다음 거래일과 짝을 짓습니다.</dd>
     <dt>후행 상관</dt><dd>직전 장 수익률과 오늘 롱 비중의 상관계수입니다. 크면 시장이 오른 뒤에야 롱 글이 늘어난다, 즉 심리가 시장을 따라간다는 뜻입니다.</dd>
     <dt>p값</dt><dd>그 정도 상관이 우연으로 나올 확률입니다. 0.05보다 작으면 "통계적으로 유의"로 표시합니다. 3일 평균은 이웃한 날이 겹쳐 계산되므로 p값이 실제보다 작게 나올 수 있습니다. 하루 값으로도 확인해 보세요.</dd>
     <dt>방향 일치</dt><dd>롱 비중이 50%보다 높은 날 다음 장이 올랐는지(낮은 날은 내렸는지) 맞힌 비율입니다. 동전 던지기 기준은 50%입니다.</dd>
-    <dt>산점도</dt><dd>점 하나가 하루입니다. 점선은 추세선이고, 빨강은 그 장이 오른 날, 파랑은 내린 날입니다.</dd>
+    <dt>산점도</dt><dd>점 하나가 하루입니다. 점선은 추세선이고, 주황은 그 장이 오른 날, 파랑은 내린 날입니다.</dd>
   </dl>
   <div class="verdict"><b>지금 데이터로 본 해석</b><p id="dverdict"></p></div>
 </section>
@@ -372,12 +366,12 @@ const DIRS={L:"롱",S:"숏",N:"관망",P:"하소연",I:"정보"};
     let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${name} 종가와 일별 롱 비중">`;
     s+=`<text x="${m0.l}" y="10" style="fill:var(--ink);font-weight:600">${name} 종가</text>`;
     [lo,(lo+hi)/2,hi].forEach(v=>{s+=`<line x1="${m0.l}" x2="${W-m0.r}" y1="${Yt(v)}" y2="${Yt(v)}" stroke="var(--line)" stroke-dasharray="2 3"/><text x="${m0.l-6}" y="${Yt(v)+4}" text-anchor="end">${Math.round(v).toLocaleString("ko-KR")}</text>`});
-    s+=`<polyline points="${mk.map(x=>X(x[0])+","+Yt(x[1])).join(" ")}" fill="none" stroke="var(--ink)" stroke-width="2"/>`;
+    s+=`<defs><linearGradient id="gT" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--teal)" stop-opacity=".35"/><stop offset="1" stop-color="var(--teal)" stop-opacity="0"/></linearGradient><linearGradient id="gL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--long)" stop-opacity=".32"/><stop offset="1" stop-color="var(--long)" stop-opacity="0"/></linearGradient></defs>`;if(mk.length>1)s+=`<polygon points="${X(mk[0][0])},${top.t+top.h} ${mk.map(x=>X(x[0])+","+Yt(x[1])).join(" ")} ${X(mk[mk.length-1][0])},${top.t+top.h}" fill="url(#gT)"/>`;s+=`<polyline points="${mk.map(x=>X(x[0])+","+Yt(x[1])).join(" ")}" fill="none" stroke="var(--teal)" stroke-width="2"/>`;
     mk.forEach((x,i)=>{const prev=i?mk[i-1][1]:base[1];s+=`<circle cx="${X(x[0])}" cy="${Yt(x[1])}" r="3" fill="${x[1]>=prev?"var(--long)":"var(--short)"}"><title>${x[0].slice(5)} ${x[1].toLocaleString("ko-KR")} (${pf(x[1]/prev-1)})</title></circle>`});
     s+=`<text x="${m0.l}" y="${bot.t-17}" style="fill:var(--ink);font-weight:600">Threads 롱 비중 ${sm=="roll"?"(3일 평균, 점은 하루 값)":"(하루 값)"}</text>`;
     [0,.5,1].forEach(v=>{s+=`<line x1="${m0.l}" x2="${W-m0.r}" y1="${Yb(v)}" y2="${Yb(v)}" stroke="var(--line)" ${v==.5?"":'stroke-dasharray="2 3"'}/><text x="${m0.l-6}" y="${Yb(v)+4}" text-anchor="end">${v*100}%</text>`});
     const rp=days.map(d=>[d,roll(d)]).filter(x=>x[1]!=null);
-    if(sm=="roll")s+=`<polyline points="${rp.map(x=>X(x[0])+","+Yb(x[1])).join(" ")}" fill="none" stroke="var(--long)" stroke-width="2.2"/>`;
+    if(sm=="roll"&&rp.length>1)s+=`<polygon points="${X(rp[0][0])},${Yb(0)} ${rp.map(x=>X(x[0])+","+Yb(x[1])).join(" ")} ${X(rp[rp.length-1][0])},${Yb(0)}" fill="url(#gL)"/><polyline points="${rp.map(x=>X(x[0])+","+Yb(x[1])).join(" ")}" fill="none" stroke="var(--long)" stroke-width="2.2"/>`;
     days.forEach(d=>{const v=share(d);if(v==null)return;const x=D[d];s+=`<circle cx="${X(d)}" cy="${Yb(v)}" r="${2.5+Math.sqrt(x.L+x.S)*1.3}" fill="var(--long)" fill-opacity="${sm=="roll"?.35:.85}"><title>${d.slice(5)} 롱 ${x.L} · 숏 ${x.S} (${Math.round(v*100)}%)</title></circle>`});
     cal.forEach((d,i)=>{const dow=new Date(d+"T00:00:00Z").getUTCDay();if(dow==0||dow==6)s+=`<rect x="${X(d)-((W-m0.l-m0.r)/(cal.length-1))/2}" y="${top.t}" width="${(W-m0.l-m0.r)/(cal.length-1)}" height="${bot.t+bot.h-top.t}" fill="var(--chip)" opacity=".5"/>`;if((cal.length-1-i)%step==0)s+=`<text x="${X(d)}" y="${H-12}" text-anchor="${i==cal.length-1?"end":"middle"}">${+d.slice(5,7)}/${+d.slice(8)}</text>`});
     s+="</svg>";$("#dchart").innerHTML=`<div>${s}</div><div class="legend" style="margin-top:4px"><span style="--c:var(--long)">상승한 날 / 롱</span><span style="--c:var(--short)">하락한 날</span><span style="--c:var(--chip)">주말</span></div>`;
