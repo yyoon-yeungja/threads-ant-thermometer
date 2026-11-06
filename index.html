@@ -53,10 +53,8 @@ section{display:grid;gap:14px}
 .kpi{padding-left:8px}.kpi b{font-size:16px;white-space:nowrap}.kpi span{font-size:11.5px;line-height:1.35}
 .wk{grid-template-columns:1fr 54px;gap:4px 10px}.wk .lab{grid-column:1/-1}
 table{font-size:12.5px}th,td{padding:8px 5px}
-#assetT td:first-child b{white-space:nowrap}
-#assetT th:nth-child(6),#assetT td:nth-child(6){display:none}
 .ls{width:64px}
-#histT th:nth-child(5),#histT td:nth-child(5),#histT th:nth-child(8),#histT td:nth-child(8){display:none}
+#histT th:nth-child(5),#histT td:nth-child(5){display:none}
 #histT td:first-child{white-space:nowrap}
 .wrap .panel{padding:12px}
 .legend{gap:6px 12px}
@@ -147,6 +145,22 @@ h1 .en{white-space:nowrap;font-size:13px;font-weight:400;color:var(--muted);lett
 .qa:hover{color:var(--short);border-color:var(--short)}
 .qa:focus-visible{outline:2px solid var(--short);outline-offset:2px}
 .foot{display:flex;flex-wrap:wrap;gap:4px 16px;justify-content:space-between;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+.per{margin-left:auto;font-size:12px;color:var(--muted)}
+.kwl{display:grid;gap:12px}
+.kw{display:grid;grid-template-columns:82px 1fr 92px;gap:12px;align-items:center;font-size:13.5px}
+.kw b{font-weight:600;white-space:nowrap}
+.kw .bar{height:16px;border-radius:4px}
+.kw .bar i{cursor:default}
+.kw .v{display:flex;justify-content:flex-end;align-items:center;gap:8px;white-space:nowrap}
+.kw .v .num{font-size:13px;color:var(--muted)}
+.mood{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--chip);color:var(--muted)}
+.mood.L{background:var(--long-soft);color:var(--long)}.mood.S{background:var(--short-soft);color:var(--short)}
+.kw small{grid-column:2/-1;margin-top:-8px;font-size:11.5px;color:var(--muted)}
+#tip{position:fixed;z-index:50;pointer-events:none;background:#0b0b0d;color:#eef0f3;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12.5px;line-height:1.5;box-shadow:0 6px 20px rgba(0,0,0,.45);max-width:240px;opacity:0;transition:opacity .08s}
+#tip.on{opacity:1}
+#tip b{font-weight:600}#tip .k{color:#9aa0aa}
+#tip .L{color:var(--long)}#tip .S{color:var(--short)}#tip .T{color:var(--teal)}
+.hov{cursor:crosshair;touch-action:pan-y}
 .hcard{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px;display:grid;gap:12px;scroll-margin-top:16px}
 .hcard p{margin:0;line-height:1.7;max-width:72ch}
 .hcard dl{margin:0;display:grid;grid-template-columns:132px 1fr;gap:10px 18px}
@@ -168,7 +182,7 @@ h1 .en{white-space:nowrap;font-size:13px;font-weight:400;color:var(--muted);lett
 #hdlg .db dt{font-weight:700;font-size:13.5px}
 #hdlg .db dd{margin:0;color:var(--muted);line-height:1.65;font-size:13.5px}
 @media (max-width:560px){#hdlg .db dl{grid-template-columns:1fr;gap:2px}#hdlg .db dd{margin-bottom:10px}#hdlg{max-height:85vh}}
-@media (max-width:560px){.hcard{padding:16px}.hcard dl{grid-template-columns:1fr;gap:2px}.hcard dd{margin-bottom:10px}}
+@media (max-width:560px){.kw{grid-template-columns:64px 1fr 74px;gap:8px}.kw .v .num{display:none}.hcard{padding:16px}.hcard dl{grid-template-columns:1fr;gap:2px}.hcard dd{margin-bottom:10px}}
 @media (prefers-reduced-motion:no-preference){.bar i{transition:width .5s ease}}
 </style>
 </head>
@@ -220,12 +234,13 @@ h1 .en{white-space:nowrap;font-size:13px;font-weight:400;color:var(--muted);lett
 
 <section>
   <div class="sh"><h2>주간 합계</h2><button type="button" class="qa" data-help="help-weekly" aria-haspopup="dialog" aria-label="읽는 법" title="읽는 법">?</button></div>
-  <div class="panel scroll"><table id="histT"><thead><tr><th>주간</th><th class="n">글</th><th class="n">롱</th><th class="n">숏</th><th class="n">하소연</th><th class="n">롱 비중</th><th class="n">가중</th><th class="n">삭제</th></tr></thead><tbody></tbody></table></div>
+  <div class="panel scroll"><table id="histT"><thead><tr><th>주간</th><th class="n">글</th><th class="n">롱</th><th class="n">숏</th><th class="n">하소연</th><th class="n">롱 비중</th><th class="n">가중</th></tr></thead><tbody></tbody></table></div>
 </section>
 
 <section>
-  <div class="sh"><h2>많이 언급된 종목</h2><button type="button" class="qa" data-help="help-assets" aria-haspopup="dialog" aria-label="읽는 법" title="읽는 법">?</button></div>
-  <div class="panel scroll"><table id="assetT"><thead><tr><th>대상</th><th class="n">언급</th><th class="n">롱</th><th class="n">숏</th><th>롱·숏</th><th>분위기</th></tr></thead><tbody></tbody></table></div>
+  <div class="sh"><h2>키워드별 분위기</h2><button type="button" class="qa" data-help="help-kw" aria-haspopup="dialog" aria-label="읽는 법" title="읽는 법">?</button><span class="per" id="kwPer"></span></div>
+  <div class="panel"><div class="kwl" id="kwList"></div>
+  <div class="legend" style="margin-top:12px"><span style="--c:var(--long)">롱</span><span style="--c:var(--short)">숏</span><span style="--c:var(--neutral)">관망·하소연·뉴스</span></div></div>
 </section>
 
 <footer class="foot"><span id="updated"></span><span>투자 권유가 아닙니다</span></footer>
@@ -267,40 +282,54 @@ h1 .en{white-space:nowrap;font-size:13px;font-weight:400;color:var(--muted);lett
     <dt>글</dt><dd>그 주(월~일)에 모아 분류한 투자 관련 글 수입니다. 투자와 무관한 글은 뺍니다.</dd>
     <dt>롱 · 숏 · 하소연</dt><dd>분류별 글 수입니다.</dd>
     <dt>롱 비중 · 가중</dt><dd>롱 ÷ (롱 + 숏), 그리고 같은 계산을 좋아요 수로 한 값입니다.</dd>
-    <dt>삭제</dt><dd>주간 정리 때 다시 열어 봤더니 지워져 있던 롱·숏 글 수입니다. 예측이 빗나간 뒤 글을 지우는 경우가 많아, 지워진 글도 처음 본 원문 기준으로 집계에 넣습니다.</dd>
   </dl>
 </section>
 
-<section class="hcard" id="help-assets">
-  <h2>많이 언급된 종목</h2>
-  <p>최근 주간 표본에서 종목·시장이 언급된 횟수입니다. 한 글에 여러 종목이 나오면 각각 셉니다. 나스닥·미장, 코스피·국장, 비트코인·코인처럼 같은 대상을 부르는 말은 하나로 묶습니다. 막대는 그 종목을 언급한 롱·숏 글의 비율이고, 분위기는 롱 비중이 70% 이상이면 "롱 우세", 35% 이하면 "숏 우세", 롱·숏 글이 2개 미만이면 "뉴스 위주"로 표시합니다.</p>
+<section class="hcard" id="help-kw">
+  <h2>키워드별 분위기</h2>
+  <dl>
+    <dt>무엇을 셌나</dt><dd>매일 검색하는 핵심 키워드 6개(코스피, 삼성전자, 국장, 나스닥, 미국주식, 비트코인) 각각으로 최근 7일 표본 시간대에 모은 최신 글을 분류한 결과입니다. 한 글이 두 키워드에 걸리면 양쪽에 셉니다. 투자와 무관한 글은 뺍니다.</dd>
+    <dt>막대</dt><dd>주황은 롱, 파랑은 숏, 회색은 방향이 없는 글(관망·손실 하소연·뉴스)입니다. 막대에 마우스를 올리면 개수가 나옵니다.</dd>
+    <dt>판정</dt><dd>롱 ÷ (롱 + 숏)이 60% 이상이면 "롱", 40% 이하면 "숏", 그 사이거나 롱·숏 글이 합쳐 3개 미만이면 회색 "중립"으로 표시합니다.</dd>
+  </dl>
 </section>
 
 <section class="hcard" id="help-method">
   <h2>수집과 분류 방법</h2>
   <dl>
-    <dt>수집</dt><dd>Threads에서 주식, 코스피, 삼성전자, 하이닉스, 비트코인, 코인, 미국주식, 나스닥, 매수, 손절, 반등, 폭락, 엔비디아, 국장 14개 키워드를 하루 세 번(한국 시간 9:41, 15:41, 2:41) 검색합니다. 글이 몰리는 시간 직후에 모아 지워지기 전 원문을 남깁니다. 11월 3일까지는 인기 게시물만, 11월 4일부터는 최신 게시물까지 포함해 표본이 큽니다.</dd>
+    <dt>수집</dt><dd>하루 세 번(한국 시간 9:41, 15:41, 2:41) 직전 2시간 동안 올라온 최신 글을 핵심 키워드 6개(코스피, 삼성전자, 국장, 나스닥, 미국주식, 비트코인)로 검색해 키워드당 최대 80개씩 표본으로 모읍니다. 매일 같은 시간대만 보기 때문에 날마다 비교할 수 있습니다. 11월 3일까지는 키워드 14개의 인기 게시물만 본 작은 표본이라, 11월 4일부터와는 기준이 다릅니다.</dd>
     <dt>분류</dt><dd>롱 = 상승·매수·버티기를 권하거나 기대하는 글. 숏 = 하락·탈출·경고 글. 관망 = 방향 없는 의견·질문. 손실 하소연 = 물림·손실을 털어놓는 글. 뉴스·정보 = 사실 전달 글. 정치·광고 등 무관한 글은 뺍니다. 사람이 읽고 판단한 것이라 애매한 글이 있을 수 있습니다.</dd>
     <dt>지수</dt><dd>나스닥 종합(^IXIC), S&amp;P500(^GSPC), 코스피(^KS11) 일별 종가(Yahoo Finance). 상관계수는 피어슨 r, p값은 t검정입니다.</dd>
-    <dt>갱신</dt><dd>일별 점과 지수는 매일 오후, 주간 합계와 종목 표는 매주 월요일 아침에 갱신됩니다.</dd>
+    <dt>갱신</dt><dd>일별 점·지수·키워드별 분위기는 매일, 주간 합계는 매주 갱신됩니다.</dd>
     <dt>한계</dt><dd>아직 표본이 짧아 상관이 우연인지 가리기 어렵습니다. 의미 있게 보려면 최소 두세 달치가 필요합니다. 지난 글을 거슬러 모으면 틀린 예측이 이미 지워져 낙관 쪽으로 치우치므로, 수집을 시작한 뒤의 글만 씁니다. 특정 계정이나 글은 공개하지 않습니다. 투자 권유가 아닙니다.</dd>
   </dl>
 </section>
 </main>
 </div>
+<div id="tip" role="status" aria-live="off"></div>
 <dialog id="hdlg" aria-labelledby="hdlgT"><div class="dh"><h2 id="hdlgT"></h2><button type="button" class="dx" aria-label="닫기">✕</button></div><div class="db"></div></dialog>
 
 <script>
 const HISTORY=/*HISTORY_START*/[{"week": "10/19~10/25", "start": "2026-10-19", "end": "2026-10-25", "n": 31, "L": 7, "S": 3, "N": 10, "P": 5, "I": 6, "long": 0.7, "wlong": 0.504}, {"week": "10/26~11/01", "start": "2026-10-26", "end": "2026-11-01", "n": 58, "L": 14, "S": 14, "N": 3, "P": 9, "I": 18, "long": 0.5, "wlong": 0.646}]/*HISTORY_END*/;
-const DAILY=/*DAILY_START*/[{"d": "2026-10-19", "n": 4, "L": 1, "S": 1, "N": 1, "P": 0, "I": 1, "lkL": 246, "lkS": 610}, {"d": "2026-10-20", "n": 4, "L": 1, "S": 0, "N": 1, "P": 0, "I": 2, "lkL": 138, "lkS": 0}, {"d": "2026-10-21", "n": 6, "L": 0, "S": 2, "N": 3, "P": 0, "I": 1, "lkL": 0, "lkS": 706}, {"d": "2026-10-22", "n": 1, "L": 1, "S": 0, "N": 0, "P": 0, "I": 0, "lkL": 261, "lkS": 0}, {"d": "2026-10-23", "n": 11, "L": 2, "S": 0, "N": 4, "P": 3, "I": 2, "lkL": 335, "lkS": 0}, {"d": "2026-10-25", "n": 4, "L": 2, "S": 0, "N": 1, "P": 1, "I": 0, "lkL": 359, "lkS": 0}, {"d": "2026-10-26", "n": 5, "L": 1, "S": 0, "N": 0, "P": 2, "I": 2, "lkL": 277, "lkS": 0}, {"d": "2026-10-27", "n": 5, "L": 1, "S": 2, "N": 1, "P": 0, "I": 1, "lkL": 741, "lkS": 529}, {"d": "2026-10-28", "n": 9, "L": 5, "S": 0, "N": 1, "P": 2, "I": 1, "lkL": 1266, "lkS": 0}, {"d": "2026-10-29", "n": 5, "L": 2, "S": 0, "N": 0, "P": 1, "I": 2, "lkL": 1616, "lkS": 0}, {"d": "2026-10-30", "n": 9, "L": 0, "S": 3, "N": 0, "P": 1, "I": 5, "lkL": 0, "lkS": 465}, {"d": "2026-10-31", "n": 17, "L": 2, "S": 6, "N": 2, "P": 3, "I": 4, "lkL": 210, "lkS": 975}, {"d": "2026-11-01", "n": 12, "L": 4, "S": 3, "N": 1, "P": 1, "I": 3, "lkL": 668, "lkS": 527}, {"d": "2026-11-02", "n": 9, "L": 2, "S": 1, "N": 4, "P": 0, "I": 2, "lkL": 271, "lkS": 117}, {"d": "2026-11-03", "n": 0, "L": 0, "S": 0, "N": 0, "P": 0, "I": 0, "lkL": 0, "lkS": 0, "src": "window"}]/*DAILY_END*/;
-const MKT=/*MKT_START*/{"^IXIC": [["2026-10-05", 27477.31], ["2026-10-06", 27599.79], ["2026-10-07", 27538.69], ["2026-10-08", 27193.34], ["2026-10-09", 27366.17], ["2026-10-12", 27245.9], ["2026-10-13", 27204.38], ["2026-10-14", 26692.87], ["2026-10-15", 26713.03], ["2026-10-16", 26140.03], ["2026-10-19", 26430.89], ["2026-10-20", 26424.82], ["2026-10-21", 26702.86], ["2026-10-22", 26008.86], ["2026-10-23", 25955.34], ["2026-10-26", 26169.38], ["2026-10-27", 26477.81], ["2026-10-28", 26549.85], ["2026-10-29", 26184.72], ["2026-10-30", 25437], ["2026-11-02", 25164.31], ["2026-11-03", 25372.01]], "^GSPC": [["2026-10-05", 7773.95], ["2026-10-06", 7818.93], ["2026-10-07", 7801.77], ["2026-10-08", 7765.36], ["2026-10-09", 7811.54], ["2026-10-12", 7807.24], ["2026-10-13", 7805.45], ["2026-10-14", 7718.94], ["2026-10-15", 7744.06], ["2026-10-16", 7659.44], ["2026-10-19", 7690.73], ["2026-10-20", 7712.57], ["2026-10-21", 7757.17], ["2026-10-22", 7663.43], ["2026-10-23", 7623.68], ["2026-10-26", 7676.77], ["2026-10-27", 7722.6], ["2026-10-28", 7743.98], ["2026-10-29", 7720.39], ["2026-10-30", 7580.07], ["2026-11-02", 7541.4], ["2026-11-03", 7568.92]], "^KS11": [["2026-10-06", 6941.39], ["2026-10-07", 6803.9], ["2026-10-08", 6625.93], ["2026-10-12", 6384.24], ["2026-10-13", 6035.35], ["2026-10-14", 6008.81], ["2026-10-15", 5554.22], ["2026-10-16", 5668.05], ["2026-10-19", 5768.01], ["2026-10-20", 5552.74], ["2026-10-21", 5735.66], ["2026-10-22", 5533.77], ["2026-10-23", 5550.3], ["2026-10-26", 5469.47], ["2026-10-27", 5638.34], ["2026-10-28", 6012.44], ["2026-10-29", 5937.66], ["2026-10-30", 5730.74], ["2026-11-02", 5859.08], ["2026-11-03", 5648.79], ["2026-11-04", 5683.67]]}/*MKT_END*/;
-const ASSETS=/*ASSETS_START*/[{"k": "나스닥·미장", "n": 26, "L": 5, "S": 5}, {"k": "코스피·국장", "n": 21, "L": 3, "S": 5}, {"k": "SK하이닉스", "n": 16, "L": 8, "S": 2}, {"k": "비트코인·코인", "n": 13, "L": 6, "S": 3}, {"k": "삼성전자", "n": 12, "L": 5, "S": 4}, {"k": "엔비디아", "n": 8, "L": 1, "S": 0}, {"k": "SOXL", "n": 5, "L": 1, "S": 2}, {"k": "메타", "n": 4, "L": 0, "S": 0}, {"k": "인텔", "n": 3, "L": 0, "S": 0}, {"k": "반도체", "n": 3, "L": 1, "S": 2}, {"k": "마이크론", "n": 2, "L": 1, "S": 0}, {"k": "알파벳", "n": 2, "L": 0, "S": 0}, {"k": "아마존", "n": 2, "L": 0, "S": 0}]/*ASSETS_END*/;
-const UPDATED=/*UPDATED_START*/"2026-11-05 10:48 KST"/*UPDATED_END*/;
+const DAILY=/*DAILY_START*/[{"d": "2026-10-19", "n": 4, "L": 1, "S": 1, "N": 1, "P": 0, "I": 1, "lkL": 246, "lkS": 610}, {"d": "2026-10-20", "n": 4, "L": 1, "S": 0, "N": 1, "P": 0, "I": 2, "lkL": 138, "lkS": 0}, {"d": "2026-10-21", "n": 6, "L": 0, "S": 2, "N": 3, "P": 0, "I": 1, "lkL": 0, "lkS": 706}, {"d": "2026-10-22", "n": 1, "L": 1, "S": 0, "N": 0, "P": 0, "I": 0, "lkL": 261, "lkS": 0}, {"d": "2026-10-23", "n": 11, "L": 2, "S": 0, "N": 4, "P": 3, "I": 2, "lkL": 335, "lkS": 0}, {"d": "2026-10-25", "n": 4, "L": 2, "S": 0, "N": 1, "P": 1, "I": 0, "lkL": 359, "lkS": 0}, {"d": "2026-10-26", "n": 5, "L": 1, "S": 0, "N": 0, "P": 2, "I": 2, "lkL": 277, "lkS": 0}, {"d": "2026-10-27", "n": 5, "L": 1, "S": 2, "N": 1, "P": 0, "I": 1, "lkL": 741, "lkS": 529}, {"d": "2026-10-28", "n": 9, "L": 5, "S": 0, "N": 1, "P": 2, "I": 1, "lkL": 1266, "lkS": 0}, {"d": "2026-10-29", "n": 5, "L": 2, "S": 0, "N": 0, "P": 1, "I": 2, "lkL": 1616, "lkS": 0}, {"d": "2026-10-30", "n": 9, "L": 0, "S": 3, "N": 0, "P": 1, "I": 5, "lkL": 0, "lkS": 465}, {"d": "2026-10-31", "n": 17, "L": 2, "S": 6, "N": 2, "P": 3, "I": 4, "lkL": 210, "lkS": 975}, {"d": "2026-11-01", "n": 12, "L": 4, "S": 3, "N": 1, "P": 1, "I": 3, "lkL": 668, "lkS": 527}, {"d": "2026-11-02", "n": 9, "L": 2, "S": 1, "N": 4, "P": 0, "I": 2, "lkL": 271, "lkS": 117}, {"d": "2026-11-03", "n": 0, "L": 0, "S": 0, "N": 0, "P": 0, "I": 0, "lkL": 0, "lkS": 0, "src": "window"}, {"d": "2026-11-04", "n": 222, "L": 27, "S": 10, "N": 53, "P": 5, "I": 127, "lkL": 73, "lkS": 11, "src": "window"}, {"d": "2026-11-05", "n": 261, "L": 16, "S": 24, "N": 27, "P": 13, "I": 181, "lkL": 50, "lkS": 21, "src": "window"}]/*DAILY_END*/;
+const MKT=/*MKT_START*/{"^IXIC": [["2026-10-05", 27477.31], ["2026-10-06", 27599.79], ["2026-10-07", 27538.69], ["2026-10-08", 27193.34], ["2026-10-09", 27366.17], ["2026-10-12", 27245.9], ["2026-10-13", 27204.38], ["2026-10-14", 26692.87], ["2026-10-15", 26713.03], ["2026-10-16", 26140.03], ["2026-10-19", 26430.89], ["2026-10-20", 26424.82], ["2026-10-21", 26702.86], ["2026-10-22", 26008.86], ["2026-10-23", 25955.34], ["2026-10-26", 26169.38], ["2026-10-27", 26477.81], ["2026-10-28", 26549.85], ["2026-10-29", 26184.72], ["2026-10-30", 25437], ["2026-11-02", 25164.31], ["2026-11-03", 25372.01], ["2026-11-04", 25736.51], ["2026-11-05", 24315]], "^GSPC": [["2026-10-05", 7773.95], ["2026-10-06", 7818.93], ["2026-10-07", 7801.77], ["2026-10-08", 7765.36], ["2026-10-09", 7811.54], ["2026-10-12", 7807.24], ["2026-10-13", 7805.45], ["2026-10-14", 7718.94], ["2026-10-15", 7744.06], ["2026-10-16", 7659.44], ["2026-10-19", 7690.73], ["2026-10-20", 7712.57], ["2026-10-21", 7757.17], ["2026-10-22", 7663.43], ["2026-10-23", 7623.68], ["2026-10-26", 7676.77], ["2026-10-27", 7722.6], ["2026-10-28", 7743.98], ["2026-10-29", 7720.39], ["2026-10-30", 7580.07], ["2026-11-02", 7541.4], ["2026-11-03", 7568.92], ["2026-11-04", 7688.62], ["2026-11-05", 7353.73]], "^KS11": [["2026-10-06", 6941.39], ["2026-10-07", 6803.9], ["2026-10-08", 6625.93], ["2026-10-12", 6384.24], ["2026-10-13", 6035.35], ["2026-10-14", 6008.81], ["2026-10-15", 5554.22], ["2026-10-16", 5668.05], ["2026-10-19", 5768.01], ["2026-10-20", 5552.74], ["2026-10-21", 5735.66], ["2026-10-22", 5533.77], ["2026-10-23", 5550.3], ["2026-10-26", 5469.47], ["2026-10-27", 5638.34], ["2026-10-28", 6012.44], ["2026-10-29", 5937.66], ["2026-10-30", 5730.74], ["2026-11-02", 5859.08], ["2026-11-03", 5648.79], ["2026-11-04", 5683.8], ["2026-11-05", 5383.8], ["2026-11-06", 5059.69]]}/*MKT_END*/;
+const KW=/*KW_START*/{"from": "2026-11-04", "to": "2026-11-05", "rows": [{"k": "코스피", "L": 8, "S": 19, "N": 26, "P": 10, "I": 123, "n": 186}, {"k": "미국주식", "L": 8, "S": 5, "N": 16, "P": 2, "I": 70, "n": 101}, {"k": "삼성전자", "L": 11, "S": 6, "N": 17, "P": 1, "I": 64, "n": 99}, {"k": "비트코인", "L": 9, "S": 3, "N": 14, "P": 1, "I": 41, "n": 68}, {"k": "나스닥", "L": 4, "S": 4, "N": 6, "P": 1, "I": 47, "n": 62}, {"k": "국장", "L": 5, "S": 3, "N": 9, "P": 4, "I": 8, "n": 29}]}/*KW_END*/;
+const UPDATED=/*UPDATED_START*/"2026-11-06 17:55 KST"/*UPDATED_END*/;
 const $=s=>document.querySelector(s);
 const fmt=n=>n==null?"–":n.toLocaleString("ko-KR");
 const pct=x=>Math.round(x*100)+"%";
 const COL={L:"var(--long)",S:"var(--short)",N:"var(--neutral)",P:"var(--pain)",I:"var(--info)"};
 const DIRS={L:"롱",S:"숏",N:"관망",P:"하소연",I:"정보"};
+// tooltip
+const TIP=document.getElementById("tip");
+function showTip(html,x,y){TIP.innerHTML=html;TIP.classList.add("on");const w=TIP.offsetWidth,h=TIP.offsetHeight,vw=innerWidth,vh=innerHeight;let L=x+14,T=y+14;if(L+w>vw-8)L=x-w-14;if(L<8)L=8;if(T+h>vh-8)T=y-h-14;if(T<8)T=8;TIP.style.left=L+"px";TIP.style.top=T+"px"}
+function hideTip(){TIP.classList.remove("on")}
+document.addEventListener("pointermove",e=>{const el=e.target.closest&&e.target.closest("[data-tip]");if(el)showTip(el.dataset.tip,e.clientX,e.clientY);else if(!e.target.closest(".hov"))hideTip()});
+document.addEventListener("pointerdown",e=>{const el=e.target.closest&&e.target.closest("[data-tip]");if(el)showTip(el.dataset.tip,e.clientX,e.clientY);else if(!e.target.closest(".hov"))hideTip()});
+addEventListener("scroll",()=>{if(matchMedia("(hover:none)").matches)return;hideTip()},{passive:true});
+document.documentElement.addEventListener("mouseleave",hideTip);
+const WD=["일","월","화","수","목","금","토"];
+const dlab=d=>`${+d.slice(5,7)}/${+d.slice(8)} (${WD[new Date(d+"T00:00:00Z").getUTCDay()]})`;
 (function(){
   const d=DAILY.slice(-7),prev=DAILY.slice(-14,-7);
   const sum=(a,k)=>a.reduce((s,x)=>s+(x[k]||0),0);
@@ -311,12 +340,16 @@ const DIRS={L:"롱",S:"숏",N:"관망",P:"하소연",I:"정보"};
   $("#kWeighted").textContent=c.lkL+c.lkS?pct(c.lkL/(c.lkL+c.lkS)):"–";
   $("#kShift").textContent=prev.length?pct(ls(p))+" → "+pct(ls(c)):"–";
   $("#kPain").textContent=(prev.length?p.P+" → ":"")+c.P+"건";
-  const row=(label,x)=>{const n=x.n||1;return `<div class="wk"><div class="lab">${label} <span class="num" style="color:var(--muted)">(${x.n}건)</span></div><div class="bar" role="img" aria-label="${label} 롱 ${x.L}, 숏 ${x.S}">${["L","S","N","P","I"].map(k=>`<i style="width:${x[k]/n*100}%;background:${COL[k]}" title="${DIRS[k]} ${x[k]}"></i>`).join("")}</div><div class="r">롱 ${pct(ls(x))}</div></div>`};
+  const row=(label,x)=>{const n=x.n||1;return `<div class="wk"><div class="lab">${label} <span class="num" style="color:var(--muted)">(${x.n}건)</span></div><div class="bar" role="img" aria-label="${label} 롱 ${x.L}, 숏 ${x.S}">${["L","S","N","P","I"].map(k=>`<i style="width:${x[k]/n*100}%;background:${COL[k]}" data-tip="<b>${label}</b><br>${DIRS[k]} <b>${x[k]}</b>개 (${Math.round(x[k]/n*100)}%)"></i>`).join("")}</div><div class="r">롱 ${pct(ls(x))}</div></div>`};
   const lab=a=>a.length?a[0].d.slice(5).replace("-","/")+"~"+a[a.length-1].d.slice(5).replace("-","/"):"";
   $("#weeks").innerHTML=(prev.length?row("이전 "+lab(prev),p):"")+row("최근 "+lab(d),c);
-  $("#histT tbody").innerHTML=[...HISTORY].reverse().map(w=>`<tr><td>${w.week}</td><td class="n">${w.n}</td><td class="n" style="color:var(--long)">${w.L}</td><td class="n" style="color:var(--short)">${w.S}</td><td class="n" style="color:var(--pain)">${w.P}</td><td class="n">${pct(w.long)}</td><td class="n">${pct(w.wlong)}</td><td class="n">${w.del==null?"–":w.del}</td></tr>`).join("");
-  const mood=a=>{const t=a.L+a.S;if(t<2)return '<span class="chip">뉴스 위주</span>';const r=a.L/t;return r>=.7?'<span class="chip warn">롱 우세</span>':r<=.35?'<span class="chip paid">숏 우세</span>':'<span class="chip">팽팽</span>'};
-  $("#assetT tbody").innerHTML=ASSETS.map(a=>{const t=a.L+a.S||1;return `<tr><td><b>${a.k}</b></td><td class="n">${a.n}</td><td class="n" style="color:var(--long)">${a.L}</td><td class="n" style="color:var(--short)">${a.S}</td><td><div class="ls"><i style="width:${a.L/t*100}%;background:var(--long)"></i><i style="width:${a.S/t*100}%;background:var(--short)"></i></div></td><td>${mood(a)}</td></tr>`}).join("");
+  $("#histT tbody").innerHTML=[...HISTORY].reverse().map(w=>`<tr><td>${w.week}</td><td class="n">${w.n}</td><td class="n" style="color:var(--long)">${w.L}</td><td class="n" style="color:var(--short)">${w.S}</td><td class="n" style="color:var(--pain)">${w.P}</td><td class="n">${pct(w.long)}</td><td class="n">${pct(w.wlong)}</td></tr>`).join("");
+  const kmood=a=>{const t=a.L+a.S;if(t<3)return ["N","중립"];const r=a.L/t;return r>=.6?["L","롱"]:r<=.4?["S","숏"]:["N","중립"]};
+  if(KW.rows&&KW.rows.length){$("#kwPer").textContent=KW.from.slice(5).replace("-","/")+"~"+KW.to.slice(5).replace("-","/");
+  $("#kwList").innerHTML=KW.rows.map(a=>{const O=(a.N||0)+(a.P||0)+(a.I||0),n=a.L+a.S+O||1,[mc,ml]=kmood(a),r=a.L+a.S?Math.round(a.L/(a.L+a.S)*100)+"%":"–";
+    const seg=(v,c,lab)=>v?`<i style="width:${v/n*100}%;background:${c}" data-tip="<b>${a.k}</b><br>${lab} <b>${v}</b>개 (${Math.round(v/n*100)}%)<br><span class=k>전체 ${n}개 · 롱 비중 ${r}</span>"></i>`:"";
+    return `<div class="kw"><b>${a.k}</b><div class="bar" role="img" aria-label="${a.k} 롱 ${a.L}, 숏 ${a.S}, 기타 ${O}">${seg(a.L,"var(--long)","롱")}${seg(a.S,"var(--short)","숏")}${seg(O,"var(--neutral)","관망·하소연·뉴스")}</div><div class="v"><span class="num">${r}</span><span class="mood ${mc}">${ml}</span></div></div>`}).join("")}
+  else $("#kwList").innerHTML='<p class="sub">표본이 쌓이면 표시됩니다.</p>';
   $("#updated").textContent="마지막 갱신: "+UPDATED;
 })();
 // daily vs index
@@ -351,7 +384,7 @@ const DIRS={L:"롱",S:"숏",N:"관망",P:"하소연",I:"정보"};
     ticks(x0,x1,xk=="r").forEach(v=>{s+=`<text x="${X(v)}" y="${H-m.b+15}" text-anchor="middle">${xk=="r"?(v*100).toFixed(1)+"%":Math.round(v*100)+"%"}</text>`});
     s+=`<text x="${W-m.r}" y="${H-3}" text-anchor="end">${xl} →</text>`;
     if(pts.length>=4){const n=xs.length,mx=xs.reduce((a,b)=>a+b)/n,my=ys.reduce((a,b)=>a+b)/n;let sxy=0,sxx=0;for(let i=0;i<n;i++){sxy+=(xs[i]-mx)*(ys[i]-my);sxx+=(xs[i]-mx)**2}const b=sxx?sxy/sxx:0,a=my-b*mx;s+=`<line x1="${X(x0)}" y1="${Y(a+b*x0)}" x2="${X(x1)}" y2="${Y(a+b*x1)}" stroke="var(--info)" stroke-width="1.8" stroke-dasharray="5 4" clip-path="inset(0)"/>`}
-    pts.forEach(p=>{const c=p.r>=0?"var(--long)":"var(--short)";s+=`<circle cx="${X(p[xk])}" cy="${Y(p[yk])}" r="4.5" fill="${c}" fill-opacity=".8"><title>${p.d.slice(5)} 롱 ${Math.round(p.s*100)}% · ${p.on.slice(5)} ${pf(p.r)}</title></circle>`});
+    pts.forEach(p=>{const c=p.r>=0?"var(--long)":"var(--short)";s+=`<circle cx="${X(p[xk])}" cy="${Y(p[yk])}" r="5" fill="${c}" fill-opacity=".85" style="cursor:pointer" data-tip="<b>${dlab(p.d)}</b> 롱 비중 <b class=L>${Math.round(p.s*100)}%</b><br>${IDX[ix][0]} ${dlab(p.on)} <b class=${p.r>=0?"L":"S"}>${pf(p.r)}</b>"/><circle cx="${X(p[xk])}" cy="${Y(p[yk])}" r="12" fill="transparent" data-tip="<b>${dlab(p.d)}</b> 롱 비중 <b class=L>${Math.round(p.s*100)}%</b><br>${IDX[ix][0]} ${dlab(p.on)} <b class=${p.r>=0?"L":"S"}>${pf(p.r)}</b>"/>`});
     el.innerHTML=s+"</svg>"}
   function draw(){
     const {m}=series();const name=IDX[ix][0];
@@ -367,14 +400,27 @@ const DIRS={L:"롱",S:"숏",N:"관망",P:"하소연",I:"정보"};
     s+=`<text x="${m0.l}" y="10" style="fill:var(--ink);font-weight:600">${name} 종가</text>`;
     [lo,(lo+hi)/2,hi].forEach(v=>{s+=`<line x1="${m0.l}" x2="${W-m0.r}" y1="${Yt(v)}" y2="${Yt(v)}" stroke="var(--line)" stroke-dasharray="2 3"/><text x="${m0.l-6}" y="${Yt(v)+4}" text-anchor="end">${Math.round(v).toLocaleString("ko-KR")}</text>`});
     s+=`<defs><linearGradient id="gT" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--teal)" stop-opacity=".35"/><stop offset="1" stop-color="var(--teal)" stop-opacity="0"/></linearGradient><linearGradient id="gL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--long)" stop-opacity=".32"/><stop offset="1" stop-color="var(--long)" stop-opacity="0"/></linearGradient></defs>`;if(mk.length>1)s+=`<polygon points="${X(mk[0][0])},${top.t+top.h} ${mk.map(x=>X(x[0])+","+Yt(x[1])).join(" ")} ${X(mk[mk.length-1][0])},${top.t+top.h}" fill="url(#gT)"/>`;s+=`<polyline points="${mk.map(x=>X(x[0])+","+Yt(x[1])).join(" ")}" fill="none" stroke="var(--teal)" stroke-width="2"/>`;
-    mk.forEach((x,i)=>{const prev=i?mk[i-1][1]:base[1];s+=`<circle cx="${X(x[0])}" cy="${Yt(x[1])}" r="3" fill="${x[1]>=prev?"var(--long)":"var(--short)"}"><title>${x[0].slice(5)} ${x[1].toLocaleString("ko-KR")} (${pf(x[1]/prev-1)})</title></circle>`});
+    mk.forEach((x,i)=>{const prev=i?mk[i-1][1]:base[1];s+=`<circle cx="${X(x[0])}" cy="${Yt(x[1])}" r="3" fill="${x[1]>=prev?"var(--long)":"var(--short)"}"/>`});
     s+=`<text x="${m0.l}" y="${bot.t-17}" style="fill:var(--ink);font-weight:600">Threads 롱 비중 ${sm=="roll"?"(3일 평균, 점은 하루 값)":"(하루 값)"}</text>`;
     [0,.5,1].forEach(v=>{s+=`<line x1="${m0.l}" x2="${W-m0.r}" y1="${Yb(v)}" y2="${Yb(v)}" stroke="var(--line)" ${v==.5?"":'stroke-dasharray="2 3"'}/><text x="${m0.l-6}" y="${Yb(v)+4}" text-anchor="end">${v*100}%</text>`});
     const rp=days.map(d=>[d,roll(d)]).filter(x=>x[1]!=null);
     if(sm=="roll"&&rp.length>1)s+=`<polygon points="${X(rp[0][0])},${Yb(0)} ${rp.map(x=>X(x[0])+","+Yb(x[1])).join(" ")} ${X(rp[rp.length-1][0])},${Yb(0)}" fill="url(#gL)"/><polyline points="${rp.map(x=>X(x[0])+","+Yb(x[1])).join(" ")}" fill="none" stroke="var(--long)" stroke-width="2.2"/>`;
-    days.forEach(d=>{const v=share(d);if(v==null)return;const x=D[d];s+=`<circle cx="${X(d)}" cy="${Yb(v)}" r="${2.5+Math.sqrt(x.L+x.S)*1.3}" fill="var(--long)" fill-opacity="${sm=="roll"?.35:.85}"><title>${d.slice(5)} 롱 ${x.L} · 숏 ${x.S} (${Math.round(v*100)}%)</title></circle>`});
+    days.forEach(d=>{const v=share(d);if(v==null)return;const x=D[d];s+=`<circle cx="${X(d)}" cy="${Yb(v)}" r="${2.5+Math.sqrt(x.L+x.S)*1.3}" fill="var(--long)" fill-opacity="${sm=="roll"?.35:.85}"/>`});
     cal.forEach((d,i)=>{const dow=new Date(d+"T00:00:00Z").getUTCDay();if(dow==0||dow==6)s+=`<rect x="${X(d)-((W-m0.l-m0.r)/(cal.length-1))/2}" y="${top.t}" width="${(W-m0.l-m0.r)/(cal.length-1)}" height="${bot.t+bot.h-top.t}" fill="var(--chip)" opacity=".5"/>`;if((cal.length-1-i)%step==0)s+=`<text x="${X(d)}" y="${H-12}" text-anchor="${i==cal.length-1?"end":"middle"}">${+d.slice(5,7)}/${+d.slice(8)}</text>`});
+    s+=`<line id="hl" x1="0" x2="0" y1="${top.t}" y2="${bot.t+bot.h}" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 3" visibility="hidden"/><circle id="hlT" r="5" fill="none" stroke="var(--teal)" stroke-width="2" visibility="hidden"/><circle id="hlB" r="5" fill="none" stroke="var(--long)" stroke-width="2" visibility="hidden"/><rect class="hov" x="${m0.l}" y="${top.t}" width="${W-m0.l-m0.r}" height="${bot.t+bot.h-top.t}" fill="transparent"/>`;
     s+="</svg>";$("#dchart").innerHTML=`<div>${s}</div><div class="legend" style="margin-top:4px"><span style="--c:var(--long)">상승한 날 / 롱</span><span style="--c:var(--short)">하락한 날</span><span style="--c:var(--chip)">주말</span></div>`;
+    {const svg=$("#dchart svg"),hl=svg.querySelector("#hl"),hT=svg.querySelector("#hlT"),hB=svg.querySelector("#hlB"),ov=svg.querySelector(".hov");
+     const MM=Object.fromEntries(mk.map((x,i)=>[x[0],[x[1],i?mk[i-1][1]:base[1]]]));
+     const move=e=>{const r=svg.getBoundingClientRect(),sx=(e.clientX-r.left)*W/r.width;let i=Math.round((sx-m0.l)/(W-m0.l-m0.r)*(cal.length-1));i=Math.max(0,Math.min(cal.length-1,i));const d=cal[i],xx=X(d);
+       hl.setAttribute("x1",xx);hl.setAttribute("x2",xx);hl.setAttribute("visibility","visible");
+       let h=`<b>${dlab(d)}</b>`;const mm=MM[d];
+       if(mm){const ch=mm[0]/mm[1]-1;h+=`<br><span class=k>${name}</span> <b class=T>${mm[0].toLocaleString("ko-KR")}</b> <b class=${ch>=0?"L":"S"}>${pf(ch)}</b>`;hT.setAttribute("cx",xx);hT.setAttribute("cy",Yt(mm[0]));hT.setAttribute("visibility","visible")}else{h+=`<br><span class=k>${name} 장 없음</span>`;hT.setAttribute("visibility","hidden")}
+       const x=D[d];if(x&&x.L+x.S){const v=x.L/(x.L+x.S);h+=`<br><span class=k>하루</span> 롱 <b class=L>${x.L}</b> · 숏 <b class=S>${x.S}</b> → <b>${Math.round(v*100)}%</b><br><span class=k>분류한 글 ${x.n}개</span>`}else h+=`<br><span class=k>그날 롱·숏 글 없음</span>`;
+       const rv=x?roll(d):null;if(sm=="roll"&&rv!=null)h+=`<br><span class=k>3일 평균</span> <b class=L>${Math.round(rv*100)}%</b>`;
+       const yv=sm=="roll"?rv:(x&&x.L+x.S?x.L/(x.L+x.S):null);if(yv!=null){hB.setAttribute("cx",xx);hB.setAttribute("cy",Yb(yv));hB.setAttribute("visibility","visible")}else hB.setAttribute("visibility","hidden");
+       showTip(h,e.clientX,e.clientY)};
+     const out=()=>{hideTip();[hl,hT,hB].forEach(n=>n.setAttribute("visibility","hidden"))};
+     ov.addEventListener("pointermove",move);ov.addEventListener("pointerdown",move);ov.addEventListener("pointerleave",e=>{if(e.pointerType!=="touch")out()});}
     const {F,B}=pairs();const pF=pearson(F.map(p=>p.s),F.map(p=>p.r)),pB=pearson(B.map(p=>p.r),B.map(p=>p.s));
     const agree=F.filter(p=>(p.s>.5&&p.r>0)||(p.s<.5&&p.r<0)).length, judged=F.filter(p=>p.s!=.5).length;
     const fmtR=x=>isNaN(x.r)?"–":(x.r>=0?"+":"")+x.r.toFixed(2), fmtP=x=>isNaN(x.p)?"":`p=${x.p<.001?"<0.001":x.p.toFixed(2)} · n=${x.n}`;
