@@ -46,7 +46,7 @@ if weekly:
 CORE = ["코스피", "삼성전자", "국장", "나스닥", "미국주식", "비트코인"]
 if raws:
     daily = json.loads(block(src, "DAILY"))
-    days = [d["d"] for d in daily if d.get("kw") == 6][-7:]
+    days = [d["d"] for d in daily if d["d"] >= "2026-11-04" and d.get("n")][-7:]  # 6-keyword window samples start 11/04
     if days:
         cnt = {k: {"k": k, "L": 0, "S": 0, "N": 0, "P": 0, "I": 0} for k in CORE}
         seen = set()
